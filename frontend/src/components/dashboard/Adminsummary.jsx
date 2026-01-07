@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Summarycard from "./Summarycard";
-import { 
-  FaUsers, 
-  FaBuilding, 
+import {
+  FaUsers,
+  FaBuilding,
   FaMoneyBillWave,
   FaFileAlt,
   FaCheckCircle,
@@ -11,6 +12,71 @@ import {
 } from "react-icons/fa";
 
 const Adminsummary = () => {
+  const [stats, setStats] = useState({
+    totalEmployees: 0,
+    totalDepartments: 0,
+    totalSalary: 0,
+    leaveStats: {
+      applied: 0,
+      approved: 0,
+      pending: 0,
+      rejected: 0
+    }
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  const fetchDashboardStats = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      };
+
+      // Fetch employees
+      const employeesRes = await axios.get('http://localhost:5000/api/employee', { headers });
+      const employees = employeesRes.data.success ? employeesRes.data.employees : [];
+
+      // Fetch departments
+      const departmentsRes = await axios.get('http://localhost:5000/api/department', { headers });
+      const departments = departmentsRes.data.success ? departmentsRes.data.departments : [];
+
+      // Fetch leaves
+      const leavesRes = await axios.get('http://localhost:5000/api/leave', { headers });
+      const leaves = leavesRes.data.success ? leavesRes.data.leaves : [];
+
+      // Calculate stats
+      const totalSalary = employees.reduce((sum, emp) => sum + (emp.salary || 0), 0);
+      const leaveStats = leaves.reduce((acc, leave) => {
+        acc[leave.status.toLowerCase()] = (acc[leave.status.toLowerCase()] || 0) + 1;
+        return acc;
+      }, { applied: leaves.length, approved: 0, pending: 0, rejected: 0 });
+
+      setStats({
+        totalEmployees: employees.length,
+        totalDepartments: departments.length,
+        totalSalary,
+        leaveStats
+      });
+    } catch (error) {
+      console.error('Failed to fetch dashboard stats', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 bg-gray-100 h-screen flex items-center justify-center">
+        <div className="text-xl">Loading dashboard...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 bg-gray-100 h-screen overflow-hidden flex flex-col animate-fadeIn">
 
@@ -22,15 +88,15 @@ const Adminsummary = () => {
       {/* Top Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-shrink-0 mb-12">
         <div className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
-          <Summarycard icon={<FaUsers/>} text="Total Employees" number={15} color="bg-gradient-to-br from-teal-500 to-teal-700" />
+          <Summarycard icon={<FaUsers/>} text="Total Employees" number={stats.totalEmployees} color="bg-gradient-to-br from-teal-500 to-teal-700" />
         </div>
 
         <div className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
-          <Summarycard icon={<FaBuilding/>} text="Departments" number={3} color="bg-gradient-to-br from-yellow-500 to-orange-600" />
+          <Summarycard icon={<FaBuilding/>} text="Departments" number={stats.totalDepartments} color="bg-gradient-to-br from-yellow-500 to-orange-600" />
         </div>
 
         <div className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
-          <Summarycard icon={<FaMoneyBillWave/>} text="Monthly Salary" number="₹35,000" color="bg-gradient-to-br from-blue-500 to-blue-700" />
+          <Summarycard icon={<FaMoneyBillWave/>} text={`Monthly Salary`} number={`₹${stats.totalSalary.toLocaleString()}`} color="bg-gradient-to-br from-blue-500 to-blue-700" />
         </div>
       </div>
 
@@ -41,21 +107,21 @@ const Adminsummary = () => {
 
       {/* Leave Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-shrink-0">
-        
+
         <div className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
-          <Summarycard icon={<FaFileAlt/>} text="Applied" number={7} color="bg-gradient-to-br from-cyan-500 to-teal-600" />
+          <Summarycard icon={<FaFileAlt/>} text="Applied" number={stats.leaveStats.applied} color="bg-gradient-to-br from-cyan-500 to-teal-600" />
         </div>
 
         <div className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
-          <Summarycard icon={<FaCheckCircle/>} text="Approved" number={2} color="bg-gradient-to-br from-green-500 to-green-700" />
+          <Summarycard icon={<FaCheckCircle/>} text="Approved" number={stats.leaveStats.approved} color="bg-gradient-to-br from-green-500 to-green-700" />
         </div>
 
         <div className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
-          <Summarycard icon={<FaHourglassHalf/>} text="Pending" number={4} color="bg-gradient-to-br from-yellow-400 to-yellow-600" />
+          <Summarycard icon={<FaHourglassHalf/>} text="Pending" number={stats.leaveStats.pending} color="bg-gradient-to-br from-yellow-400 to-yellow-600" />
         </div>
 
         <div className="transform hover:scale-105 transition-all duration-300 hover:shadow-lg">
-          <Summarycard icon={<FaTimesCircle/>} text="Rejected" number={1} color="bg-gradient-to-br from-red-500 to-red-700" />
+          <Summarycard icon={<FaTimesCircle/>} text="Rejected" number={stats.leaveStats.rejected} color="bg-gradient-to-br from-red-500 to-red-700" />
         </div>
       </div>
 

@@ -26,7 +26,7 @@ const Adminsidebar = () => {
             <span className="text-lg">Dashboard</span>
           </NavLink>
 
-          <NavLink to="/admin-dashboard" className="flex items-center space-x-4 py-2.5 px-4 rounded-lg hover:bg-gray-700 transition-all duration-200">
+          <NavLink to="/admin-dashboard/employees" className={({isActive}) => `${isActive ? "bg-teal-500 shadow-md scale-[1.02]" : "bg-gray-800 hover:bg-gray-700"} flex items-center space-x-4 py-2.5 px-4 rounded-lg transition-all duration-200`}>
             <FaUsers className="text-lg" />
             <span className="text-lg">Employees</span>
           </NavLink>
@@ -36,17 +36,17 @@ const Adminsidebar = () => {
             <span className="text-lg">Department</span>
           </NavLink>
 
-          <NavLink to="/admin-dashboard" className="flex items-center space-x-4 py-2.5 px-4 rounded-lg hover:bg-gray-700 transition-all duration-200">
+          <NavLink to="/admin-dashboard/leaves" className={({isActive}) => `${isActive ? "bg-teal-500 shadow-md scale-[1.02]" : "bg-gray-800 hover:bg-gray-700"} flex items-center space-x-4 py-2.5 px-4 rounded-lg transition-all duration-200`}>
             <FaCalendarCheck className="text-lg" />
             <span className="text-lg">Leaves</span>
           </NavLink>
 
-          <NavLink to="/admin-dashboard" className="flex items-center space-x-4 py-2.5 px-4 rounded-lg hover:bg-gray-700 transition-all duration-200">
+          <NavLink to="/admin-dashboard/salary" className={({isActive}) => `${isActive ? "bg-teal-500 shadow-md scale-[1.02]" : "bg-gray-800 hover:bg-gray-700"} flex items-center space-x-4 py-2.5 px-4 rounded-lg transition-all duration-200`}>
             <FaMoneyBillWave className="text-lg" />
             <span className="text-lg">Salary</span>
           </NavLink>
 
-          <NavLink to="/admin-dashboard" className="flex items-center space-x-4 py-2.5 px-4 rounded-lg hover:bg-gray-700 transition-all duration-200">
+          <NavLink to="/admin-dashboard/settings" className={({isActive}) => `${isActive ? "bg-teal-500 shadow-md scale-[1.02]" : "bg-gray-800 hover:bg-gray-700"} flex items-center space-x-4 py-2.5 px-4 rounded-lg transition-all duration-200`}>
             <FaCog className="text-lg" />
             <span className="text-lg">Settings</span>
           </NavLink>

@@ -7,6 +7,10 @@ import Rolebasedroutes from "./utils/Rolebasedroutes";
 import Adminsummary from "./components/dashboard/Adminsummary";
 import Departmentlist from "./components/Departments/Departmentlist";
 import Adddepartment from "./components/Departments/Adddepartment";
+import Employeelist from "./components/Employees/Employeelist";
+import Leaveslist from "./components/Leaves/Leaveslist";
+import Salarylist from "./components/Salary/Salarylist";
+import Settings from "./components/Settings/Settings";
 
 function App() {
   return (
@@ -26,6 +30,10 @@ function App() {
         <Route index element={<Adminsummary />}></Route>
         <Route path="departments" element={<Departmentlist />}></Route>
         <Route path="add-department" element={<Adddepartment />}></Route>
+        <Route path="employees" element={<Employeelist />}></Route>
+        <Route path="leaves" element={<Leaveslist />}></Route>
+        <Route path="salary" element={<Salarylist />}></Route>
+        <Route path="settings" element={<Settings />}></Route>
       </Route>
       <Route path="/employee-dashboard" element={<EmployeeDashboard />}></Route>
     </Routes>
